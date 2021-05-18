@@ -6,50 +6,50 @@ const refs = {
 };
 
 class CountdownTimer {
-    constructor({selector, targetDate, onTick}){
-        this.selector='#timer-1';
-        this.targetDate=new Date('Jul 17, 2021');
-        this.onTick=onTick;
+    constructor({selector, targetDate}){
+        this.selector=selector;
+        this.targetDate=targetDate;
+
+        this.start();
+    }
+    updateClockFace({ days, hours, mins, secs }){
+        refs.daysField.textContent = `${days}`;
+        refs.hoursField.textContent = `${hours}`;
+        refs.minsField.textContent = `${mins}`;
+        refs.secsField.textContent = `${secs}`;
     }
   
-    start(){
+    start() { 
         setInterval(() => {
         const currentTime=Date.now();
         const deltaTime=this.targetDate-currentTime;
-        const time=getTimeComponents(deltaTime);
+        const time=this.getTimeComponents(deltaTime);
+        this.updateClockFace(time);
 
-        this.onTick(time);
     }, 1000);
     }
+
+ 
+    pad(value) {
+        return String(value).padStart(2, '0');
+    } 
+
+    getTimeComponents(time) {
+        const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
+        const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+        const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+    
+        return { days, hours, mins, secs };
+    }
+    
 }
 const timer= new CountdownTimer({
     selector: '#timer-1',
-    targetDate: new Date('Jul 17, 2019'),
-    onTick: updateClockface,
+    targetDate: new Date('Jul 17, 2021'),
   });
-timer.start();
 
-function updateClockface({ days, hours, mins, secs }) {
-    refs.daysField.textContent = `${days}`;
-    refs.hoursField.textContent = `${hours}`;
-    refs.minsField.textContent = `${mins}`;
-    refs.secsField.textContent = `${secs}`;
-        return (`${days}:${hours}:${mins}:${secs}`); 
 
-}
-
-function pad(value) {
-    return String(value).padStart(2, '0');
-} 
-
-function getTimeComponents(time) {
-    const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-    const hours = pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-    const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-
-    return { days, hours, mins, secs };
-}
 
 
 
